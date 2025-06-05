@@ -1,13 +1,14 @@
 import axios from "axios";
 import { useState } from "react"
 import { useDispatch } from "react-redux";
-import { addUser } from "./utils/userSlice";
+import { addUser, removeUser } from "./utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "./constant/BaseUrl";
 
 const Login=()=>{
     const [emailId,setemailId]=useState("radha@gmail.com");
     const [password,setpassword]=useState("Radha@123");
+    const [error,seterror]=useState("")
     const dispatch=useDispatch()
     const Navigate=useNavigate()
     const handlerlogin=async ()=>{
@@ -15,11 +16,11 @@ const Login=()=>{
         const res=await axios.post(BASE_URL+"/login",{emailId,password},{withCredentials:true})
         dispatch(addUser(res.data))
         return Navigate("/")
-
-    
     }
         catch(err){
-            console.log(err.messsge)
+          seterror("Invalid Credentials")
+          // dispatch(removeUser())
+            // console.log(err.messsge)
         }
    
     }
@@ -36,10 +37,12 @@ const Login=()=>{
     <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
       <div className="card-body">
         <fieldset className="fieldset">
+             <p className="text-red-500">{error}</p>
           <label className="label">Email</label>
           <input type="email" value={emailId} className="input" onChange={(ele)=>{setemailId(ele.target.value)}} />
           <label className="label">Password</label>
           <input type="password" value={password} className="input" onChange={(ele)=>{setpassword(ele.target.value)}} />
+       
           <div><a className="link link-hover">Forgot password?</a></div>
           <button onClick={handlerlogin} className="btn btn-neutral mt-4">Login</button>
         </fieldset>
