@@ -15,7 +15,7 @@ const Body=()=>{
     const fetchUser=async ()=>{
         if(userData) return;
         try{
-        const res=await axios.get(BASE_URL+"/profile/view",{},{withCredentials:true});
+        const res=await axios.get(BASE_URL+"/profile/view",{withCredentials:true});
         dispatch(addUser(res.data));
     }catch(err){
         if(err.status===401)
@@ -23,15 +23,14 @@ const Body=()=>{
         console.log(err);
     }
     }
-
     useEffect(()=>{
         fetchUser();
     },[])
 
     return(
-        <div>
+        <div className="">
             <Navbar/>
-            <Outlet/>
+           <div className=""><Outlet/></div> 
             <Footer/>
         </div>
     )

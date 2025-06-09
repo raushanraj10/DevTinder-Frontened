@@ -18,21 +18,22 @@ const Navbar=()=>{
   }
   }
   const selector=useSelector((store)=>store.user)
-  console.log(selector)
+  // console.log(selector)
     return(
-       <div className="navbar bg-base-100 shadow-sm">
-  <div className="flex-1">
-    <Link to="/" className="btn btn-ghost text-xl">devTinder</Link>
+       <div className="navbar bg-base-500 shadow-sm flex justify-between ">
+  <div className="">
+    {selector?<Link to="/" className="btn btn-ghost text-3xl">DevTinder</Link>:<a className="btn btn-ghost text-3xl">DevTinder</a>}
   </div>
-  <div className="flex gap-2">
-    <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
+  <div className="">
+    {/* <input type="text" placeholder="Search" className="input input-bordered h-50 md:w-auto" /> */}
     <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-        {selector&&(<div className="w-10 rounded-full">
-          <img
+        {selector&&
+          <div className=" flex w-10 rounded-full">
+          <img className="flex"
             alt="Tailwind CSS Navbar component"
-            src="https://i.pinimg.com/736x/92/59/72/92597243e069cd3feccc7fab97d1cbbd.jpg" />
-        </div>)}
+            src={selector.photourl} />
+        </div>}
       </div>
       <ul
         tabIndex={0}
@@ -40,11 +41,11 @@ const Navbar=()=>{
         <li>
           <Link to="/profile" className="justify-between">
             Profile
-            <span className="badge">New</span>
           </Link>
         </li>
-        <li><a>Settings</a></li>
-        <li><a onClick={handlelogout}>Logout</a></li>
+        <li><Link to="/friends" >Friend</Link></li>
+        <li><Link to="/request" >Request</Link></li>
+        <li><a onClick={()=>handlelogout()}>Logout</a></li>
       </ul>
     </div>
   </div>
