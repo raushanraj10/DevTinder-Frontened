@@ -27,12 +27,24 @@ const Connections=()=>{
 
     if(connectionsdata.length===0) return (<h1 className="text-center my-16 font-serif text-xl font-bold">No Connectons</h1>)
 
-    return (connectionsdata&&
-       <div className="  flex justify-center my-16 gap-16 flex-wrap">
-        {/* <h1>dfg</h1> */}
-        {connectionsdata.map((ele)=><CardConnect connectionsdata={ele}/>)}
-       </div>
-    )
+//    return (connectionsdata&&
+//        <div className=" flex flex-wrap justify-center my-16 gap-10">
+//         {/* <h1>dfg</h1> */}
+//         {connectionsdata.map((ele)=><CardConnect connectionsdata={ele}/>)}
+//         </div>
+//     )
+
+
+return (
+  connectionsdata && (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 px-4 py-10">
+      {connectionsdata.map((ele, index) => (
+        <CardConnect key={index} connectionsdata={ele} />
+      ))}
+    </div>
+  )
+);
+
 
 }
 export default Connections

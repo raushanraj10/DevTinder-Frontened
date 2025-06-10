@@ -28,9 +28,9 @@ const Body=()=>{
     },[])
 
     return(
-        <div className="">
+        <div className="min-h-screen flex flex-col">
             <Navbar/>
-           <div className=""><Outlet/></div> 
+            <div className="flex-grow"><Outlet/></div>
             <Footer/>
         </div>
     )

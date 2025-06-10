@@ -20,7 +20,7 @@ const Navbar=()=>{
   const selector=useSelector((store)=>store.user)
   // console.log(selector)
     return(
-       <div className="navbar bg-base-500 shadow-sm flex justify-between ">
+       <div className="navbar bg-base-200 shadow-sm flex justify-between ">
   <div className="">
     {selector?<Link to="/" className="btn btn-ghost text-3xl">DevTinder</Link>:<a className="btn btn-ghost text-3xl">DevTinder</a>}
   </div>
@@ -37,13 +37,17 @@ const Navbar=()=>{
       </div>
       <ul
         tabIndex={0}
-        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow text-2xl">
+         <li><Link to="/">Home</Link></li>
         <li>
           <Link to="/profile" className="justify-between">
-            Profile
+            Profile   
           </Link>
+          
         </li>
-        <li><Link to="/friends" >Friend</Link></li>
+    
+        
+         <li><Link to="/friends" >Friend</Link></li>
         <li><Link to="/request" >Request</Link></li>
         <li><a onClick={()=>handlelogout()}>Logout</a></li>
       </ul>

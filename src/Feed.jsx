@@ -14,13 +14,13 @@ const Feed =()=>{
     const dispatch=useDispatch();
 
      const feedloder=async()=>{
-        if(userdata) return;
+        if(feedselector) return;
         try{
         const res=await axios.get(BASE_URL+"/feed",{withCredentials:true})
         // console.log(res.data.data)
         dispatch(addfeed(res.data))
-        if(userdata)
-            Navigate("/feed")
+        // if(userdata)
+        //     Navigate("/feed")
     }
         catch(err){
             console.log(err.message)
@@ -34,11 +34,14 @@ const Feed =()=>{
     
     useEffect(()=>{feedloder()},[]);
    
-     
-    // if(feedselector.length===0) return (<h1 className="my-10 text-center font-serif font-bold text-2xl">All Feed U 
-    // Already Visited</h1>)
+    if(!feedselector)
+        return;
 
-    return(feedselector&&
+     
+    if(feedselector.length===0) return (<h1 className="my-10 text-center font-serif font-bold text-2xl">All Feed U 
+    Already Visited</h1>)
+
+    return(
         <div className="flex justify-center my-16 flex-wrap">
             <UserCard feeddata={feedselector[0]} />
         </div>  
