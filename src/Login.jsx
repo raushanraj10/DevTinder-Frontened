@@ -88,6 +88,7 @@ import { addUser, removeUser } from "./utils/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "./constant/BaseUrl";
 import validator from "validators/lib/validators";
+import Shimmer from "./Shimmer";
 
 const Login = () => {
   const [emailId, setemailId] = useState("harinath@gmail.com");
@@ -98,12 +99,13 @@ const Login = () => {
   const [age,setage]=useState(0)
   const [about, setabout] = useState("This Is My Default About!")
   const [isLogin, setLogin] = useState(false)
-  const [ishow , setshow]=useState(false)
+  const [isshow , setshow]=useState(false)
+  // const [shim,setshim]=useState(true)
 
   const [error, seterror] = useState("")
   const dispatch = useDispatch()
   const Navigate = useNavigate()
-  const userdata = useSelector((store) => store.user)
+  // const userdata = useSelector((store) => store.user)
 
   
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -162,7 +164,7 @@ const Login = () => {
   return (
     
     <>
-    {(ishow || error) && (
+    {(isshow || error) && (
   <div className="toast toast-top toast-center z-50">
     <div className={`alert ${error ? "alert-error" : "alert-info"}`}>
       <span>{error ? error : "You Signed Up. Please Login"}</span>
@@ -220,6 +222,7 @@ const Login = () => {
 
               {isLogin && (
                 <>
+                {isshow&&<Shimmer/>}
                   <div>
             <label className="block mb-1">About</label>
             <textarea
