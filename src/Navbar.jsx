@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { BASE_URL } from "./constant/BaseUrl"
 import { removeUser } from "./utils/userSlice"
-import { removeUserFromFeed } from "./utils/feedSlice"
+import { removefeed, removeUserFromFeed } from "./utils/feedSlice"
 import { removeconnection } from "./utils/connectSlice"
 import { removerequestnull } from "./utils/requestSlice"
 
@@ -17,11 +17,12 @@ const Navbar=()=>{
     dispatch(removeUser())
     dispatch(removeconnection())
     dispatch(removerequestnull())
-    // Navigate("/login")
-    window.location.href = "/login";
+    dispatch(removefeed())
+   return  Navigate("/login")
+    // window.location.href = "/login";
   }
   catch(err){
-    console.log(err)
+    // console.log(err)
   }
   }
  
