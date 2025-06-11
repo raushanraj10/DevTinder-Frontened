@@ -4,6 +4,7 @@ import { BASE_URL } from "./constant/BaseUrl"
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { addconnection } from "./utils/connectSlice"
+import Shimmer from "./Shimmer"
 
 const Connections=()=>{
     // const user=useSelector((store)=>store.user)
@@ -23,9 +24,10 @@ const Connections=()=>{
     }
     useEffect(()=>{connect()},[]);
 
-    if(!connectionsdata) return;
+    if(!connectionsdata) {
+        return(<div className="flex justify-center mt-16"><Shimmer/></div>)}
 
-    if(connectionsdata.length===0) return (<h1 className="text-center my-16 font-serif text-xl font-bold">No Connectons</h1>)
+    if(connectionsdata.length===0) return (<h1 className="text-center mt-8 font-serif text-2xl font-bold">No Connectons</h1>)
 
 //    return (connectionsdata&&
 //        <div className=" flex flex-wrap justify-center my-16 gap-10">
@@ -37,7 +39,7 @@ const Connections=()=>{
 
 return (
   connectionsdata && (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 px-4 py-10">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10 px-4 py-10">
       {connectionsdata.map((ele, index) => (
         <CardConnect key={index} connectionsdata={ele} />
       ))}

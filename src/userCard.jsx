@@ -48,66 +48,200 @@
 
 
 
+// import axios from "axios";
+// import { BASE_URL } from "./constant/BaseUrl";
+// import { useDispatch, useSelector } from "react-redux";
+// import { removeUserFromFeed } from "./utils/feedSlice";
+// import { useState } from "react";
+
+// const Card = ({ feeddata,validity }) => {
+//   const [isshow,setshow]=useState(false)
+//   const [error,seterror]=useState("")
+// //  console.log(validity.vd)
+
+
+
+//   const { _id, firstName, lastName, about, skills, photourl, age, gender } = feeddata;
+//   const dispatch = useDispatch();
+
+//   const handleRequest = async (status, userId) => {
+//     try {
+//       await axios.post(`${BASE_URL}/request/send/${status}/${userId}`, {}, { withCredentials: true });
+//       dispatch(removeUserFromFeed(userId));
+//       seterror(""); 
+//       setshow(true);
+//        console.log(isshow)
+//       setInterval(() => setshow(false), 1000); 
+//     } catch (err) {
+//       console.error("Request error:", err.response?.data || err.message);
+//     seterror("failed to Send Request!");
+//   }
+//   };
+
+//   return (
+
+//      <>
+//     {(isshow || error) && (
+//   <div className="toast toast-top toast-center z-50">
+//     <div className={`alert ${error ? "alert-error" : "alert-info"}`}>
+//       <span>{error ? error : "Request Sended"}</span>
+//     </div>
+//   </div>
+//     )}
+
+//     <div className="card w-96 bg-base-200 shadow-xl border border-base-300 transition-transform hover:scale-[1.015]">
+//       <figure className="h-64 overflow-hidden">
+//         <img
+//           src={photourl}
+//           alt="User Pic"
+//           className="w-full h-full object-cover"
+//         />
+//       </figure>
+
+//       <div className="card-body text-white">
+//         <h2 className="text-2xl font-semibold">{firstName} {lastName}</h2>
+//         <div className="flex justify-between text-sm text-gray-300 mt-1">
+//           <span className="capitalize">{gender}</span>
+//           <span>{age} yrs</span>
+//         </div>
+
+//         <div className="mt-2">
+//           {/* <p className="text-sm text-gray-400">
+//             <span className="font-medium text-white">Skills:</span> {skills}
+//           </p> */}
+//           <p className="text-sm text-gray-400 mt-1 line-clamp-3">
+//             <span className="font-medium text-white">About:</span> {about}
+//           </p>
+//         </div>
+
+//         {validity.vd&&<div className="card-actions justify-between mt-6">
+//         <button
+//             onClick={() => handleRequest("ignored", _id)}
+//             className="btn btn-outline border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+//           >
+//             Ignore
+//           </button>
+//           <button
+//             onClick={() => handleRequest("interested", _id)}
+//             className="btn btn-primary bg-green-600 border-none hover:bg-green-700"
+//           >
+//             Interested
+//           </button>
+//         </div>}
+//       </div>
+//     </div>
+//     </>
+//   );
+// };
+
+// export default Card;
+
+
+
 import axios from "axios";
 import { BASE_URL } from "./constant/BaseUrl";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "./utils/feedSlice";
+import { useState } from "react";
 
-const Card = ({ feeddata }) => {
-  const { _id, firstName, lastName, about, skills, photourl, age, gender } = feeddata;
+const Card = ({ feeddata, validity }) => {
+  const [isshow, setshow] = useState(false);
+  const [error, seterror] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const { _id, firstName, lastName, about, photourl, age, gender } = feeddata;
   const dispatch = useDispatch();
 
   const handleRequest = async (status, userId) => {
     try {
-      await axios.post(`${BASE_URL}/request/send/${status}/${userId}`, {}, { withCredentials: true });
-      dispatch(removeUserFromFeed(userId));
-    } catch (err) {
-      console.error("Error sending request:", err.message);
-    }
-  };
+  await axios.post(
+    `${BASE_URL}/request/send/${status}/${userId}`,
+    {},
+    { withCredentials: true }
+  );
+  
+  seterror("");
+  setshow(true);
+
+  // hide success toast after 1s
+  setTimeout(() => setshow(false), 1000);
+
+  // Delay removal from feed
+  setTimeout(() => {
+    dispatch(removeUserFromFeed(userId));
+    setIsProcessing(false);
+  }, 1000);
+} catch (err) {
+  console.error("Request error:", err.response?.data || err.message);
+  seterror("Failed to send request!");
+  setIsProcessing(false);
+  setTimeout(() => seterror(""), 1000); // hide error toast
+}
+}
 
   return (
-    <div className="card w-96 bg-base-200 shadow-xl border border-base-300 transition-transform hover:scale-[1.015]">
-      <figure className="h-64 overflow-hidden">
-        <img
-          src={photourl}
-          alt="User Pic"
-          className="w-full h-full object-cover"
-        />
-      </figure>
-
-      <div className="card-body text-white">
-        <h2 className="text-2xl font-semibold">{firstName} {lastName}</h2>
-        <div className="flex justify-between text-sm text-gray-300 mt-1">
-          <span className="capitalize">{gender}</span>
-          <span>{age} yrs</span>
+    <>
+      {(isshow || error) && (
+        <div className="toast toast-top toast-center z-50">
+          <div className={`alert ${error ? "alert-error" : "alert-info"}`}>
+            <span>{error || "Request sent successfully!"}</span>
+          </div>
         </div>
+      )}
 
-        <div className="mt-2">
-          {/* <p className="text-sm text-gray-400">
-            <span className="font-medium text-white">Skills:</span> {skills}
-          </p> */}
-          <p className="text-sm text-gray-400 mt-1 line-clamp-3">
-            <span className="font-medium text-white">About:</span> {about}
-          </p>
-        </div>
+      <div className="card w-96 bg-base-200 shadow-xl border border-base-300 transition-transform hover:scale-[1.015]">
+        <figure className="h-64 overflow-hidden">
+          <img
+            src={photourl}
+            alt="User Profile"
+            className="w-full h-full object-cover"
+          />
+        </figure>
 
-        <div className="card-actions justify-between mt-6">
-          <button
-            onClick={() => handleRequest("ignored", _id)}
-            className="btn btn-outline border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-          >
-            Ignore
-          </button>
-          <button
-            onClick={() => handleRequest("interested", _id)}
-            className="btn btn-primary bg-green-600 border-none hover:bg-green-700"
-          >
-            Interested
-          </button>
+        <div className="card-body text-white">
+          <h2 className="text-2xl font-semibold">
+            {firstName} {lastName}
+          </h2>
+          <div className="flex justify-between text-sm text-gray-300 mt-1">
+            <span className="capitalize">{gender}</span>
+            <span>{age} yrs</span>
+          </div>
+
+          <div className="mt-2">
+            <p className="text-sm text-gray-400 mt-1 line-clamp-3">
+              <span className="font-medium text-white">About:</span> {about}
+            </p>
+          </div>
+
+          {validity.vd && (
+            <div className="card-actions justify-between mt-6">
+              <button
+                onClick={() => handleRequest("ignored", _id)}
+                disabled={isProcessing}
+                className={`btn btn-outline border-red-500 text-red-500 ${
+                  isProcessing
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-red-500 hover:text-white"
+                }`}
+              >
+                Ignore
+              </button>
+              <button
+                onClick={() => handleRequest("interested", _id)}
+                disabled={isProcessing}
+                className={`btn btn-primary bg-green-600 border-none ${
+                  isProcessing
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-green-700"
+                }`}
+              >
+                Interested
+              </button>
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

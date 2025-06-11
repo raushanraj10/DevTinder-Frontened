@@ -5,12 +5,18 @@ import { addfeed } from "./utils/feedSlice";
 import { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import UserCard from "./userCard"
+import Shimmer from "./Shimmer";
 
 const Feed =()=>{
+    const istrue={
+    vd:true,
+  }
     // const Navigate=useNavigate()
     const feedselector=useSelector((store)=>store.feed)
-    const userdata=useSelector((store)=>store.user)
-    // console.log(feedselector)
+    // const userdata=useSelector((store)=>store.user)
+    // if(!feedselector)
+    //     Navigate("/login")
+    // console.log(userdata)
     const dispatch=useDispatch();
 
      const feedloder=async()=>{
@@ -34,8 +40,8 @@ const Feed =()=>{
     
     useEffect(()=>{feedloder()},[]);
    
-    if(!feedselector)
-        return;
+    if(!feedselector){
+        return(<div className="flex justify-center mt-16"><Shimmer/></div>)}
 
      
     if(feedselector.length===0) return (<h1 className="my-10 text-center font-serif font-bold text-2xl">All Feed U 
@@ -43,7 +49,7 @@ const Feed =()=>{
 
     return(
         <div className="flex justify-center my-16 flex-wrap">
-            <UserCard feeddata={feedselector[0]} />
+            <UserCard feeddata={feedselector[0]} validity={istrue}/>
         </div>  
     )
 }

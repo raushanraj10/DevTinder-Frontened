@@ -87,41 +87,91 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "./utils/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "./constant/BaseUrl";
+import validator from "validators/lib/validators";
 
 const Login = () => {
-  const [emailId, setemailId] = useState("");
-  const [password, setpassword] = useState("");
+  const [emailId, setemailId] = useState("harinath@gmail.com");
+  const [password, setpassword] = useState("Harinath@123");
   const [firstName, setfirstName] = useState("")
   const [lastName, setlastName] = useState("")
+  const [gender, setgender] = useState("")
+  const [age,setage]=useState(0)
+  const [about, setabout] = useState("This Is My Default About!")
   const [isLogin, setLogin] = useState(false)
+  const [ishow , setshow]=useState(false)
 
   const [error, seterror] = useState("")
   const dispatch = useDispatch()
   const Navigate = useNavigate()
   const userdata = useSelector((store) => store.user)
 
+  
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    function isValidEmail(emailId) {
+     return emailRegex.test(emailId);
+     }
+
   const handlerlogin = async () => {
     try {
+      // console.log("jkdshfhs")
       const res = await axios.post(BASE_URL + "/login", { emailId, password }, { withCredentials: true })
       dispatch(addUser(res.data))
-      return Navigate("/")
+       Navigate("/")
     }
     catch (err) {
-      seterror("Invalid Credentials")
-    }
+  console.log("Login error:", err.response?.data || err.message);
+  seterror("Invalid Credentials!");
+}
+
   }
 
   const handlersingup = async () => {
-    try {
-      const res = await axios.post(BASE_URL + "/signup", { firstName, lastName, emailId, password }, { withCredentials: true })
-      setLogin(false)
-      Navigate("/login")
-      console.log(res)
-    }
-    catch (err) { console.log(err.message) }
+  if (!firstName || !lastName || !emailId || !password) {
+    seterror("Please fill all required fields!");
+    return;
   }
 
+  if(!isValidEmail(emailId))
+  {
+    seterror("Email Formate Is Not Corrrect!")
+    return; 
+  }
+
+  try {
+    const res = await axios.post(
+      BASE_URL + "/signup",
+      { firstName, lastName, emailId, password, about, age, gender },
+      { withCredentials: true }
+    );
+    // console.log(res.data)
+    if(res.data===5)
+      {return seterror("Email Id Already Exist!")}
+
+    seterror(""); // clear any old error
+    setLogin(false); // switch to login view
+    setshow(true); // show success toast
+    setInterval(() => setshow(false), 3000); // hide after 4 sec
+  } catch (err) {
+    console.error("Signup error:", err.response?.data || err.message);
+    seterror("Signup failed. Make sure all fields are filled correctly!");
+  }
+};
+
+
+
   return (
+    
+    <>
+    {(ishow || error) && (
+  <div className="toast toast-top toast-center z-50">
+    <div className={`alert ${error ? "alert-error" : "alert-info"}`}>
+      <span>{error ? error : "You Signed Up. Please Login"}</span>
+    </div>
+  </div>
+)}
+
+
+
     <div className="flex justify-center items-center min-h-screen bg-base-100">
       <div className="hero-content flex-col lg:flex-row-reverse w-full max-w-4xl px-6">
         <div className="card bg-base-200 w-full max-w-sm shadow-lg rounded-2xl p-6">
@@ -131,24 +181,62 @@ const Login = () => {
               {isLogin && (
                 <>
                   <label className="text-white font-medium">First Name</label>
-                  <input type="text" value={firstName} onChange={(e) => setfirstName(e.target.value)}
+                  <input type="text" placeholder="abc" value={firstName} onChange={(e) => setfirstName(e.target.value)}
                     className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
-                  <label className="text-white font-medium">Last Name</label>
-                  <input type="text" value={lastName} onChange={(e) => setlastName(e.target.value)}
+                  <label   className="text-white font-medium">Last Name</label>
+                  <input type="text" placeholder="abc" value={lastName} onChange={(e) => setlastName(e.target.value)}
                     className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                
+                <label   className="text-white font-medium">Age</label>
+                  <input type="number" placeholder="123" value={age} onChange={(e) => setage(e.target.value)}
+                    className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                
+                
+                <div>
+            <label className="block mb-1">Gender</label>
+            <select
+              value={gender}
+              onChange={(e) =>{ setgender(e.target.value)}}
+              className="w-full text-white px-3 py-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              <option value="">Select</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
                 </>
               )}
               <label className="text-white font-medium">Email</label>
-              <input type="email" value={emailId} onChange={(e) => setemailId(e.target.value)}
+              <input type="email" placeholder="abc123@gmail.com" value={emailId} onChange={(e) => setemailId(e.target.value)}
                 className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
               <label className="text-white font-medium">Password</label>
               <input type="password" value={password} onChange={(e) => setpassword(e.target.value)}
                 className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
+
+
+              {isLogin && (
+                <>
+                  <div>
+            <label className="block mb-1">About</label>
+            <textarea
+              value={about}
+              onChange={(e) => setabout(e.target.value)}
+              className="w-full h-24 px-3 py-2 border text-white border-gray-300 rounded-md resize-none outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Write something about yourself..."
+            />
+          </div>
+                 </>)}
+
               <div className="mt-2">
-                <Link onClick={() => setLogin(prev => !prev)} className="text-sm text-blue-600 hover:underline">
+                <Link onClick={() => {
+                  setLogin(prev => !prev);
+                  seterror("");  // clear old error
+                   }} className="text-sm text-blue-600 hover:underline">
+
                   {isLogin ? "Already have an account? Login" : "New User? Sign Up"}
                 </Link>
               </div>
@@ -161,6 +249,7 @@ const Login = () => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 export default Login;
