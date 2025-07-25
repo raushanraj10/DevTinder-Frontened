@@ -1,1 +1,1 @@
-export const BASE_URL="https://dev-tinder-2-git-main-raushanraj10s-projects.vercel.app/";
+export const BASE_URL="http://localhost:5173";
