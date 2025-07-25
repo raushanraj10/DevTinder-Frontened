@@ -1,1 +1,1 @@
-export const BASE_URL="/api";
+export const BASE_URL="https://dev-tinder-2-git-main-raushanraj10s-projects.vercel.app/";
